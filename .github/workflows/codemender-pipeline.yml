@@ -195,13 +195,13 @@ jobs:
         run: |
           set -uo pipefail
           echo "Scanning '$SCAN_PATH' — files: $SCAN_FILES (in-scope source is uploaded to Google's CodeMender service)..."
-          cm find "$SCAN_PATH" -y 2>&1 | tee "$RUNNER_TEMP/cm-find.cm.log"
+          cm find "$SCAN_PATH" --model gemini-3.6-flash -y 2>&1 | tee "$RUNNER_TEMP/cm-find.cm.log"
 
       - name: Export Security Report (cm report -f json)
         if: ${{ always() && steps.scan.conclusion != 'skipped' }}
         run: |
           set -uo pipefail
-          cm report -f json > "$RUNNER_TEMP/cm-security-report.json" 2> "$RUNNER_TEMP/cm-report.err" || true
+          cm report --model gemini-3.6-flash -f json > "$RUNNER_TEMP/cm-security-report.json" 2> "$RUNNER_TEMP/cm-report.err" || true
           echo "----- report (first 2 KB) -----"
           head -c 2048 "$RUNNER_TEMP/cm-security-report.json" || true
           echo
